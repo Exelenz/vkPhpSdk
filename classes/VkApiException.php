@@ -11,12 +11,14 @@
  * @copyright Copyright (c) 2010 Mordehai German
  */
 
+namespace Exelenz\vkPhpSdk;
+
 /**
  * Thrown when the API returns an error.
  *
  * @author Mordehai German <mordehai.german@gmail.com>
  */
-class VkApiException extends Exception
+class VkApiException extends \Exception
 {
 	/**
 	 * The error information from the API server.

@@ -11,13 +11,15 @@
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
 
+namespace Exelenz\vkPhpSdk;
+
 if (!function_exists('curl_init'))
 	throw new Exception('VkPhpSdk needs the CURL PHP extension.');
 if (!function_exists('json_decode'))
 	throw new Exception('VkPhpSdk needs the JSON PHP extension.');
 
-require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'interfaces' . DIRECTORY_SEPARATOR . 'IVkPhpSdk.php';
-require_once 'VkApiException.php';
+//require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'interfaces' . DIRECTORY_SEPARATOR . 'IVkPhpSdk.php';
+//require_once 'VkApiException.php';
 
 /**
  * VkPhpSdk class.

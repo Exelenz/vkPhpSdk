@@ -11,7 +11,11 @@
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
 
-require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'interfaces' . DIRECTORY_SEPARATOR . 'IOauth2Proxy.php';
+namespace Exelenz\vkPhpSdk\classes;
+
+use Exelenz\vkPhpSdk\interfaces\IOauth2Proxy;
+
+//require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'interfaces' . DIRECTORY_SEPARATOR . 'IOauth2Proxy.php';
 
 /**
  * Oauth2Proxy is the OAuth 2.0 proxy class.

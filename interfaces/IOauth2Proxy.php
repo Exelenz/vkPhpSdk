@@ -10,6 +10,8 @@
  * @copyright Copyright &copy; 2011-2012 Andrey Geonya
  */
 
+namespace Exelenz\vkPhpSdk\interfaces;
+
 /**
  * Oauth2Proxy is the OAuth 2.0 proxy interface.
  * Redirects requests to the external web resource by OAuth 2.0 protocol.

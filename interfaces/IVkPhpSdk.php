@@ -11,6 +11,8 @@
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
 
+namespace Exelenz\vkPhpSdk\interfaces;
+
 /**
  * IVkPhpSdk interface.
  * Provides access to the Vkontakte Platform.
