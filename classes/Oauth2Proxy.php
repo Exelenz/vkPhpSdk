@@ -15,14 +15,13 @@ namespace Exelenz\vkPhpSdk\classes;
 
 use Exelenz\vkPhpSdk\interfaces\IOauth2Proxy;
 
-//require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'interfaces' . DIRECTORY_SEPARATOR . 'IOauth2Proxy.php';
-
 /**
  * Oauth2Proxy is the OAuth 2.0 proxy class.
  * Redirects requests to the external web resource by OAuth 2.0 protocol.
  *
  * @see http://oauth.net/2/
  * @author Andrey Geonya
+ * @contributor Alexander Volochnev
  */
 class Oauth2Proxy implements IOauth2Proxy
 {
@@ -35,6 +34,7 @@ class Oauth2Proxy implements IOauth2Proxy
 	private $_accessTokenUrl;
 	private $_accessParams;
 	private $_authJson;
+    private $_sessionPrefix;
 
 	/**
 	 * Constructor.
@@ -46,16 +46,18 @@ class Oauth2Proxy implements IOauth2Proxy
 	 * @param string $responseType response type (for example: code)
 	 * @param string $redirectUri redirect uri
 	 * @param string $scope access scope (for example: friends,video,offline)
+     * @param string $sessionPrefix Prefix session name
 	 */
-	public function __construct($clientId, $clientSecret, $accessTokenUrl, $dialogUrl, $responseType, $redirectUri = null, $scope = null)
+	public function __construct($clientId, $clientSecret, $accessTokenUrl, $dialogUrl, $responseType, $redirectUri = null, $scope = null, $sessionPrefix = 'vkPhpSdk')
 	{
-		$this->_clientId = $clientId;
-		$this->_clientSecret = $clientSecret;
+		$this->_clientId       = $clientId;
+		$this->_clientSecret   = $clientSecret;
 		$this->_accessTokenUrl = $accessTokenUrl;		
-		$this->_dialogUrl = $dialogUrl;
-		$this->_responseType = $responseType;
-		$this->_redirectUri = $redirectUri;
-		$this->_scope = $scope;
+		$this->_dialogUrl      = $dialogUrl;
+		$this->_responseType   = $responseType;
+		$this->_redirectUri    = $redirectUri;
+		$this->_scope          = $scope;
+        $this->_sessionPrefix  = $sessionPrefix;
 	}
 
 	/**
@@ -63,41 +65,36 @@ class Oauth2Proxy implements IOauth2Proxy
 	 */
 	public function authorize()
 	{
-		if(!isset ($_SESSION))
+		if(!isset ($_SESSION)){
 			session_start();
-		
+        }
+
 		$result = false;
 		
-		if(isset($_SESSION['vkPhpSdk']['authJson'. $this->_clientId]))
-		{
-			$this->_authJson = $_SESSION['vkPhpSdk']['authJson'. $this->_clientId];
+		if(isset($_SESSION[$this->_sessionPrefix]['authJson'. $this->_clientId])) {
+			$this->_authJson = $_SESSION[$this->_sessionPrefix]['authJson'. $this->_clientId];
 			$result = true;
-		}
-		else
-		{
-			if(!(isset($_REQUEST['code']) && $_REQUEST['code']))
-			{
-				$_SESSION['vkPhpSdk']['state'] = md5(uniqid(rand(), true)); // CSRF protection
+		} else {
+			if(!(isset($_REQUEST['code']) && $_REQUEST['code'])) {
+				$_SESSION[$this->_sessionPrefix]['state'] = md5(uniqid(rand(), true)); // CSRF protection
 
 				$this->_dialogUrl .= '?client_id=' . $this->_clientId;
 				$this->_dialogUrl .= '&redirect_uri=' . $this->_redirectUri;
 				$this->_dialogUrl .= '&scope=' . $this->_scope;
 				$this->_dialogUrl .= '&response_type=' . $this->_responseType;
-				$this->_dialogUrl .= '&state=' . $_SESSION['vkPhpSdk']['state'];
+				$this->_dialogUrl .= '&state=' . $_SESSION[$this->_sessionPrefix]['state'];
 
-				echo("<script>top.location.href='" . $this->_dialogUrl . "'</script>");			
-			}
-			elseif($_REQUEST['state'] === $_SESSION['vkPhpSdk']['state'])
-			{
+				echo("<script>top.location.href='" . $this->_dialogUrl . "'</script>");
+
+			} elseif ($_REQUEST['state'] === $_SESSION[$this->_sessionPrefix]['state']) {
 				$this->_authJson = file_get_contents("$this->_accessTokenUrl?client_id=$this->_clientId&client_secret=$this->_clientSecret&code={$_REQUEST['code']}");
 
-				if($this->_authJson !== false)
-				{
-					$_SESSION['vkPhpSdk']['authJson'. $this->_clientId] = $this->_authJson;
+				if($this->_authJson !== false) {
+					$_SESSION[$this->_sessionPrefix]['authJson'. $this->_clientId] = $this->_authJson;
 					$result = true;
-				}
-				else
+				} else {
 					$result = false;
+                }
 			}
 		}
 
@@ -111,8 +108,10 @@ class Oauth2Proxy implements IOauth2Proxy
 	 */
 	public function getAccessToken()
 	{		
-		if ($this->_accessParams === null)
-			$this->_accessParams = json_decode($this->getAuthJson(), true);
+		if ($this->_accessParams === null) {
+            $this->_accessParams = json_decode($this->getAuthJson(), true);
+        }
+
 		return $this->_accessParams['access_token'];
 	}
 
@@ -123,8 +122,10 @@ class Oauth2Proxy implements IOauth2Proxy
 	 */
 	public function getExpiresIn()
 	{
-		if ($this->_accessParams === null)
+		if ($this->_accessParams === null) {
 			$this->_accessParams = json_decode($this->getAuthJson(), true);
+        }
+
 		return $this->_accessParams['expires_in'];
 	}
 	
@@ -135,8 +136,10 @@ class Oauth2Proxy implements IOauth2Proxy
 	 */
 	public function getUserId()
 	{
-		if ($this->_accessParams === null)
+		if ($this->_accessParams === null) {
 			$this->_accessParams = json_decode($this->getAuthJson(), true);
+        }
+
 		return $this->_accessParams['user_id'];		
 	}
 	

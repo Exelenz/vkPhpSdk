@@ -31,8 +31,9 @@ interface IOauth2Proxy
 	 * @param string $responseType response type (for example: code)
 	 * @param string $redirectUri redirect uri
 	 * @param string $scope access scope (for example: friends,video,offline)
+     * @param string $sessionPrefix session prefix
 	 */
-	public function __construct($clientId, $clientSecret, $accessTokenUrl, $dialogUrl, $responseType, $redirectUri = null, $scope = null);
+	public function __construct($clientId, $clientSecret, $accessTokenUrl, $dialogUrl, $responseType, $redirectUri = null, $scope = null, $sessionPrefix = 'vkPhpSdk');
 	
 	/**
 	 * Authorize client.

@@ -11,15 +11,10 @@
  * @license http://www.opensource.org/licenses/bsd-license.php
  */
 
-namespace Exelenz\vkPhpSdk;
+namespace Exelenz\vkPhpSdk\classes;
 
-if (!function_exists('curl_init'))
-	throw new Exception('VkPhpSdk needs the CURL PHP extension.');
-if (!function_exists('json_decode'))
-	throw new Exception('VkPhpSdk needs the JSON PHP extension.');
-
-//require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'interfaces' . DIRECTORY_SEPARATOR . 'IVkPhpSdk.php';
-//require_once 'VkApiException.php';
+use Exelenz\vkPhpSdk\interfaces\IVkPhpSdk;
+use Exelenz\vkPhpSdk\exceptions\VkApiException;
 
 /**
  * VkPhpSdk class.
@@ -28,7 +23,7 @@ if (!function_exists('json_decode'))
  * @see http://vkontakte.ru/developers.php
  * @author Andrey Geonya <manufacturer.software@gmail.com>
  */
-class VkPhpSdk
+class VkPhpSdk implements IVkPhpSdk
 {
 	/**
 	 * Version.
@@ -41,8 +36,8 @@ class VkPhpSdk
 	public static $curlOptions = array(
 		CURLOPT_CONNECTTIMEOUT => 10,
 		CURLOPT_RETURNTRANSFER => true,
-		CURLOPT_TIMEOUT => 60,
-		CURLOPT_USERAGENT => 'vkPhpSdk-0.2.1',
+		CURLOPT_TIMEOUT        => 60,
+		CURLOPT_USERAGENT      => 'vkPhpSdk-0.2.1',
 		CURLOPT_SSL_VERIFYPEER => false,
 	);
 
@@ -55,11 +50,8 @@ class VkPhpSdk
 	);
 		
 	private $_accessToken;
-
 	private $_userId;
-
 	private $_curlConnection;
-	
 
 	/**
 	 * Get OAuth 2.0 access token.
@@ -75,10 +67,14 @@ class VkPhpSdk
 	 * Set OAuth 2.0 access token. 
 	 * 
 	 * @param string $accessToken with access token we can make calls to secure API
+     *
+     * @return $this
 	 */
 	public function setAccessToken($accessToken)
 	{
 		$this->_accessToken = $accessToken;
+
+        return $this;
 	}
 
 	/**
@@ -93,12 +89,16 @@ class VkPhpSdk
 	
 	/**
 	 * Set user id.
-	 * 
-	 * @return string
+	 *
+     * @param string $userId
+     *
+	 * @return $this
 	 */
 	public function setUserId($userId)
 	{
 		$this->_userId = $userId;
+
+        return $this;
 	}
 
 	/**
@@ -136,11 +136,13 @@ class VkPhpSdk
 		$this->_curlConnection = curl_init();
 		
 		// Add access token to params
-		if($this->_accessToken!==null)
+		if($this->_accessToken!==null){
 			$params['access_token'] = $this->_accessToken;
+        }
 
-		if(is_array($params))
+		if(is_array($params)){
 			self::$curlOptions[CURLOPT_POSTFIELDS] = http_build_query($params, null, '&');
+        }
 		
 		self::$curlOptions[CURLOPT_URL] = self::$domainMap['api'] . $method;
 		
@@ -148,8 +150,7 @@ class VkPhpSdk
 			
 		$result = curl_exec($this->_curlConnection);
 		
-		if ($result === false)
-		{
+		if ($result === false) {
 			$exception = new VkApiException(array(
 						'error_code' => curl_errno($this->_curlConnection),
 						'error_msg' => curl_error($this->_curlConnection),
@@ -167,14 +168,15 @@ class VkPhpSdk
     /**
 	 * Validate the API result array.
 	 *
-	 * @return true
-	 * 
+     * @param array $result
+     *
 	 * @throws VkApiException
 	 */
 	protected function validateApiResult(array $result)
 	{
-		if (is_array($result) && isset($result['error']))
+		if (is_array($result) && isset($result['error'])){
 			throw new VkApiException($result['error']);
+        }
 		
 		return true;
 	}

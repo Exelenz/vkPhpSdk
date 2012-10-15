@@ -13,6 +13,8 @@
 
 namespace Exelenz\vkPhpSdk\interfaces;
 
+use Exelenz\vkPhpSdk\exceptions\VkApiException;
+
 /**
  * IVkPhpSdk interface.
  * Provides access to the Vkontakte Platform.
@@ -45,7 +47,9 @@ interface IVkPhpSdk
 	
 	/**
 	 * Set user id.
-	 * 
+	 *
+     * @param string $userId
+     *
 	 * @return string
 	 */
 	public function setUserId($userId);

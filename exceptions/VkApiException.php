@@ -11,7 +11,7 @@
  * @copyright Copyright (c) 2010 Mordehai German
  */
 
-namespace Exelenz\vkPhpSdk;
+namespace Exelenz\vkPhpSdk\exceptions;
 
 /**
  * Thrown when the API returns an error.
@@ -31,9 +31,8 @@ class VkApiException extends \Exception
 	 * Constructor
 	 *
 	 * @param array $error The error information from the API server.
-	 * @return void
 	 */
-	public function __construct($error)
+	public function __construct(array $error)
 	{
 		$this->_error = $error;
 
@@ -64,8 +63,10 @@ class VkApiException extends \Exception
 	 */
 	public function getType()
 	{
-		if (isset($this->_error['error_type']))
+		if (isset($this->_error['error_type'])) {
 			return $this->_error['error_type'];
+        }
+
 		return 'Exception';
 	}
 
@@ -77,8 +78,10 @@ class VkApiException extends \Exception
 	public function __toString()
 	{
 		$string = $this->getType() . ': ';
-		if ($this->code != 0)
+		if ($this->code != 0) {
 			$string .= $this->code . ': ';
+        }
+
 		return $string . $this->message;
 	}
 }

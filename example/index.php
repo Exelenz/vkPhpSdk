@@ -1,6 +1,9 @@
 <?php
-require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'VkPhpSdk.php';
-require_once dirname(dirname(__FILE__)) . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'Oauth2Proxy.php';
+
+namespace Exelenz\vkPhpSdk\example;
+
+use Exelenz\vkPhpSdk\classes\VkPhpSdk;
+use Exelenz\vkPhpSdk\classes\Oauth2Proxy;
 
 // Init OAuth 2.0 proxy
 $oauth2Proxy = new Oauth2Proxy(
@@ -14,8 +17,7 @@ $oauth2Proxy = new Oauth2Proxy(
 );
 
 // Try to authorize client
-if($oauth2Proxy->authorize() === true)
-{
+if($oauth2Proxy->authorize() === true) {
 	// Init vk.com SDK
 	$vkPhpSdk = new VkPhpSdk();
 	$vkPhpSdk->setAccessToken($oauth2Proxy->getAccessToken());
@@ -26,6 +28,7 @@ if($oauth2Proxy->authorize() === true)
 		'uids' => $vkPhpSdk->getUserId(),
 		'fields' => 'uid, first_name, last_name, nickname, screen_name, photo_big',
 	));
+
 	echo 'My profile: <br />';
 	echo '<pre>';
 	print_r($result);
@@ -36,10 +39,12 @@ if($oauth2Proxy->authorize() === true)
 		'owner_id' => $vkPhpSdk->getUserId(),
 		'message' => 'Wellcome to vkPhpSdk!',
 	));
+
 	echo 'Wall post response: <br />';
 	echo '<pre>';
 	print_r($result);
-	echo '</pre>';	
-}
-else
+	echo '</pre>';
+
+} else {
 	echo 'Error occurred';
+}

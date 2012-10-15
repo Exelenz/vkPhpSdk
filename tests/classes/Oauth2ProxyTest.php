@@ -1,7 +1,7 @@
 <?php
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../../classes/Oauth2Proxy.php';
+use Exelenz\vkPhpSdk\classes\Oauth2Proxy;
 
 /**
  * Test class for Oauth2Proxy.

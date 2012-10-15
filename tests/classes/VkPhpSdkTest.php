@@ -1,7 +1,7 @@
 <?php
 require_once 'PHPUnit/Framework.php';
 
-require_once dirname(__FILE__) . '/../../classes/VkPhpSdk.php';
+use Exelenz\vkPhpSdk\classes\VkPhpSdk;
 
 /**
  * Test class for VkPhpSdk.
