@@ -11,16 +11,16 @@ Usage
 -----
 
 Look example:
-https://github.com/AndreyGeonya/VkPhpSdk/blob/master/example/index.php
+https://github.com/Exelenz/vkPhpSdk/tree/master/example
 
 Feedback
 --------
 
 Use GitHub issues tracker to report bugs and issues:
-https://github.com/AndreyGeonya/vkPhpSdk/issues
+https://github.com/Exelenz/vkPhpSdk/issues
 
-License
--------
-
-The VK PHP SDK is released under the New BSD License:
-https://github.com/AndreyGeonya/VkPhpSdk/blob/master/license.txt
+Contributors
+---------
+https://github.com/mordehaigerman
+https://github.com/AndreyGeonya
+https://github.com/Exelenz
