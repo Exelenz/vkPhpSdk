@@ -8,5 +8,6 @@
         "psr-0":{
             "Exelenz\\vkPhpSdk":""
         }
-    }
+    },
+    "target-dir": "Exelenz/vkPhpSdk",
 }
