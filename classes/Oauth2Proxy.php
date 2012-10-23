@@ -80,32 +80,32 @@ class Oauth2Proxy implements IOauth2Proxy
 	 */
 	public function authorize()
 	{
-		if(!$this->session->is_started()){
-			$this->session->start();
+		if(!$this->_session->is_started()){
+			$this->_session->start();
         }
 
 		$result = false;
 		
-		if($this->session->has($this->_sessionPrefix . 'authJson' . $this->_clientId)) {
-			$this->_authJson = $this->session->get($this->_sessionPrefix . 'authJson' . $this->_clientId);
+		if($this->_session->has($this->_sessionPrefix . 'authJson' . $this->_clientId)) {
+			$this->_authJson = $this->_session->get($this->_sessionPrefix . 'authJson' . $this->_clientId);
 			$result = true;
 		} else {
 			if(!(isset($_REQUEST['code']) && $_REQUEST['code'])) {
-                $this->session->set($this->_sessionPrefix . 'state', md5(uniqid(rand(), true))); // CSRF protection
+                $this->_session->set($this->_sessionPrefix . 'state', md5(uniqid(rand(), true))); // CSRF protection
 
 				$this->_dialogUrl .= '?client_id=' . $this->_clientId;
 				$this->_dialogUrl .= '&redirect_uri=' . $this->_redirectUri;
 				$this->_dialogUrl .= '&scope=' . $this->_scope;
 				$this->_dialogUrl .= '&response_type=' . $this->_responseType;
-				$this->_dialogUrl .= '&state=' . $this->session->get($this->_sessionPrefix . 'state');
+				$this->_dialogUrl .= '&state=' . $this->_session->get($this->_sessionPrefix . 'state');
 
 				echo("<script>top.location.href='" . $this->_dialogUrl . "'</script>");
 
-			} elseif ($_REQUEST['state'] === $this->session->get($this->_sessionPrefix . 'state')) {
+			} elseif ($_REQUEST['state'] === $this->_session->get($this->_sessionPrefix . 'state')) {
 				$this->_authJson = file_get_contents("$this->_accessTokenUrl?client_id=$this->_clientId&client_secret=$this->_clientSecret&code={$_REQUEST['code']}");
 
 				if($this->_authJson !== false) {
-					$this->session->set($this->_sessionPrefix . 'authJson' . $this->_clientId, $this->_authJson);
+					$this->_session->set($this->_sessionPrefix . 'authJson' . $this->_clientId, $this->_authJson);
 					$result = true;
 				} else {
 					$result = false;
