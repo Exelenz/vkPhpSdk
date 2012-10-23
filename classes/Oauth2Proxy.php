@@ -14,6 +14,7 @@
 namespace Exelenz\vkPhpSdk\classes;
 
 use Exelenz\vkPhpSdk\interfaces\IOauth2Proxy;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 /**
  * Oauth2Proxy is the OAuth 2.0 proxy class.
@@ -25,16 +26,18 @@ use Exelenz\vkPhpSdk\interfaces\IOauth2Proxy;
  */
 class Oauth2Proxy implements IOauth2Proxy
 {
-	private $_clientId;
-	private $_clientSecret;
-	private $_dialogUrl;
-	private $_redirectUri;
-	private $_scope;
-	private $_responseType;
-	private $_accessTokenUrl;
-	private $_accessParams;
-	private $_authJson;
-    private $_sessionPrefix;
+    protected $_clientId;
+    protected $_clientSecret;
+    protected $_dialogUrl;
+    protected $_redirectUri;
+    protected $_scope;
+    protected $_responseType;
+    protected $_accessTokenUrl;
+    protected $_accessParams;
+    protected $_authJson;
+    protected $_sessionPrefix;
+    protected $_session;
+
 
 	/**
 	 * Constructor.
@@ -47,8 +50,19 @@ class Oauth2Proxy implements IOauth2Proxy
 	 * @param string $redirectUri redirect uri
 	 * @param string $scope access scope (for example: friends,video,offline)
      * @param string $sessionPrefix Prefix session name
+     * @param SessionInterface $session Session manager
 	 */
-	public function __construct($clientId, $clientSecret, $accessTokenUrl, $dialogUrl, $responseType, $redirectUri = null, $scope = null, $sessionPrefix = 'vkPhpSdk')
+	public function __construct(
+        $clientId,
+        $clientSecret,
+        $accessTokenUrl,
+        $dialogUrl,
+        $responseType,
+        $redirectUri = null,
+        $scope = null,
+        $sessionPrefix = 'vkPhpSdk',
+        SessionInterface $session
+    )
 	{
 		$this->_clientId       = $clientId;
 		$this->_clientSecret   = $clientSecret;
@@ -58,6 +72,7 @@ class Oauth2Proxy implements IOauth2Proxy
 		$this->_redirectUri    = $redirectUri;
 		$this->_scope          = $scope;
         $this->_sessionPrefix  = $sessionPrefix;
+        $this->_session        = $session;
 	}
 
 	/**
@@ -65,32 +80,32 @@ class Oauth2Proxy implements IOauth2Proxy
 	 */
 	public function authorize()
 	{
-		if(!isset ($_SESSION)){
-			session_start();
+		if(!$this->session->is_started()){
+			$this->session->start();
         }
 
 		$result = false;
 		
-		if(isset($_SESSION[$this->_sessionPrefix]['authJson'. $this->_clientId])) {
-			$this->_authJson = $_SESSION[$this->_sessionPrefix]['authJson'. $this->_clientId];
+		if($this->session->has($this->_sessionPrefix . 'authJson' . $this->_clientId)) {
+			$this->_authJson = $this->session->get($this->_sessionPrefix . 'authJson' . $this->_clientId);
 			$result = true;
 		} else {
 			if(!(isset($_REQUEST['code']) && $_REQUEST['code'])) {
-				$_SESSION[$this->_sessionPrefix]['state'] = md5(uniqid(rand(), true)); // CSRF protection
+                $this->session->set($this->_sessionPrefix . 'state', md5(uniqid(rand(), true))); // CSRF protection
 
 				$this->_dialogUrl .= '?client_id=' . $this->_clientId;
 				$this->_dialogUrl .= '&redirect_uri=' . $this->_redirectUri;
 				$this->_dialogUrl .= '&scope=' . $this->_scope;
 				$this->_dialogUrl .= '&response_type=' . $this->_responseType;
-				$this->_dialogUrl .= '&state=' . $_SESSION[$this->_sessionPrefix]['state'];
+				$this->_dialogUrl .= '&state=' . $this->session->get($this->_sessionPrefix . 'state');
 
 				echo("<script>top.location.href='" . $this->_dialogUrl . "'</script>");
 
-			} elseif ($_REQUEST['state'] === $_SESSION[$this->_sessionPrefix]['state']) {
+			} elseif ($_REQUEST['state'] === $this->session->get($this->_sessionPrefix . 'state')) {
 				$this->_authJson = file_get_contents("$this->_accessTokenUrl?client_id=$this->_clientId&client_secret=$this->_clientSecret&code={$_REQUEST['code']}");
 
 				if($this->_authJson !== false) {
-					$_SESSION[$this->_sessionPrefix]['authJson'. $this->_clientId] = $this->_authJson;
+					$this->session->set($this->_sessionPrefix . 'authJson' . $this->_clientId, $this->_authJson);
 					$result = true;
 				} else {
 					$result = false;

@@ -4,7 +4,8 @@
     "require":{
         "php":">=5.3.0",
         "ext-curl": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "symfony/http-foundation": "v2.1.2"
     },
     "autoload":{
         "psr-0":{

@@ -171,6 +171,8 @@ class VkPhpSdk implements IVkPhpSdk
      * @param array $result
      *
 	 * @throws VkApiException
+     *
+     * @return boolean
 	 */
 	protected function validateApiResult(array $result)
 	{
