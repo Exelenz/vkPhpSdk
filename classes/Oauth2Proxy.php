@@ -80,7 +80,7 @@ class Oauth2Proxy implements IOauth2Proxy
 	 */
 	public function authorize()
 	{
-		if(!$this->_session->is_started()){
+		if(!$this->_session->isStarted()){
 			$this->_session->start();
         }
 
