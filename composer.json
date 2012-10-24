@@ -5,7 +5,7 @@
         "php":">=5.3.0",
         "ext-curl": "*",
         "ext-json": "*",
-        "symfony/http-foundation": "v2.1.2"
+        "symfony/http-foundation": "*"
     },
     "autoload":{
         "psr-0":{
