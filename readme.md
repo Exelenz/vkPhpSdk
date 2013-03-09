@@ -7,6 +7,14 @@ VK PHP SDK based on OAuth 2.0 protocol (Alpha version)
 The VK Platform http://vk.com/developers.php is a set of APIs that make your
 application more social.
 
+Differencies from original
+--------------------------
+
+1. Namespaces added
+2. Using Symfony2 sessions
+3. Few minor updates
+
+
 Usage
 -----
 
