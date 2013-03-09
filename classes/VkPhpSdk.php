@@ -45,8 +45,8 @@ class VkPhpSdk implements IVkPhpSdk
 	 * Maps aliases to Vkontakte domains.
 	 */
 	public static $domainMap = array(
-		'api' => 'https://api.vkontakte.ru/method/',
-		'www' => 'http://www.vkontakte.ru/',
+		'api' => 'https://api.vk.com/method/',
+		'www' => 'http://www.vk.com/',
 	);
 		
 	private $_accessToken;
